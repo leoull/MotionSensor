@@ -1,4 +1,4 @@
-package com.fitness.motionsensor
+package com.motion.motionsensor
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

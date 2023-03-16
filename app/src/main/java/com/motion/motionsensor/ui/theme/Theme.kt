@@ -1,4 +1,4 @@
-package com.fitness.motionsensor.ui.theme
+package com.motion.motionsensor.ui.theme
 
 import android.app.Activity
 import android.os.Build
