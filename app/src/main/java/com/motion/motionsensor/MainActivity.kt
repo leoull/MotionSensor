@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2007 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.motion.motionsensor
 
 import android.app.Activity
@@ -29,14 +14,13 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 /**
+ * Documentation: https://developer.android.com/guide/topics/sensors/sensors_motion#sensors-motion-rotate
  * Wrapper activity demonstrating the use of the new
  * [rotation vector sensor][SensorEvent.values]
  * ([TYPE_ROTATION_VECTOR][Sensor.TYPE_ROTATION_VECTOR]).
  *
  * @see Sensor
- *
  * @see SensorEvent
- *
  * @see SensorManager
  */
 class RotationVectorDemo : Activity() {
@@ -67,6 +51,8 @@ class RotationVectorDemo : Activity() {
         // Ideally a game should implement onResume() and onPause()
         // to take appropriate action when the activity looses focus
         super.onPause()
+        // disable sensor
+        mSensorManager?.unregisterListener(mRenderer)
         mRenderer!!.stop()
         mGLSurfaceView!!.onPause()
     }
@@ -99,16 +85,42 @@ class RotationVectorDemo : Activity() {
         }
 
         override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                val rotationMatrix = FloatArray(9)
+                SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+                val orientationAngles = FloatArray(3)
+                SensorManager.getOrientation(rotationMatrix, orientationAngles)
+                // The tilt angle in radians is given by the first element of the orientationAngles array.
+                // The tilt angle in radians is given by the first element of the orientationAngles array.
+                val tiltAngleRadians = orientationAngles[0]
+                // Convert to degrees if desired.
+                // Convert to degrees if desired.
+                val tiltAngleDegrees = Math.toDegrees(tiltAngleRadians.toDouble()).toFloat()
+                // Do something with the tilt angle.
+
+            }
+
             // we received a sensor event. it is a good practice to check
             // that we received the proper event
-            if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
-                // convert the rotation-vector to a 4x4 matrix. the matrix
-                // is interpreted by Open GL as the inverse of the
-                // rotation-vector, which is what we want.
-                SensorManager.getRotationMatrixFromVector(
-                    mRotationMatrix, event.values
-                )
-            }
+//            if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+//                // convert the rotation-vector to a 4x4 matrix. the matrix
+//                // is interpreted by Open GL as the inverse of the
+//                // rotation-vector, which is what we want.
+//                SensorManager.getRotationMatrixFromVector(
+//                    mRotationMatrix, event.values
+//                )
+//
+////                Log.d("++eventValues", event.values.map {
+////                    it.toString()
+////                }.toString()
+////                )
+//
+//
+////                Log.d("++AxisX,",event.values[0].toString()) // 1
+//                Log.d("++Axisy,",event.values[1].toString()) // 1
+////                Log.d("++Axisz,",event.values[2].toString()) // 1
+//
+//            }
         }
 
         override fun onDrawFrame(gl: GL10) {
@@ -150,16 +162,16 @@ class RotationVectorDemo : Activity() {
 
             init {
                 val vertices = floatArrayOf(
-                    -1f, -1f, -1f,		 1f, -1f, -1f,
-                    1f,  1f, -1f,	    -1f,  1f, -1f,
-                    -1f, -1f,  1f,      1f, -1f,  1f,
-                    1f,  1f,  1f,     -1f,  1f,  1f,
+                    -1f, -1f, -1f, 1f, -1f, -1f,
+                    1f, 1f, -1f, -1f, 1f, -1f,
+                    -1f, -1f, 1f, 1f, -1f, 1f,
+                    1f, 1f, 1f, -1f, 1f, 1f,
                 )
                 val colors = floatArrayOf(
-                    0f,  0f,  0f,  1f,  1f,  0f,  0f,  1f,
-                    1f,  1f,  0f,  1f,  0f,  1f,  0f,  1f,
-                    0f,  0f,  1f,  1f,  1f,  0f,  1f,  1f,
-                    1f,  1f,  1f,  1f,  0f,  1f,  1f,  1f,
+                    0f, 0f, 0f, 1f, 1f, 0f, 0f, 1f,
+                    1f, 1f, 0f, 1f, 0f, 1f, 0f, 1f,
+                    0f, 0f, 1f, 1f, 1f, 0f, 1f, 1f,
+                    1f, 1f, 1f, 1f, 0f, 1f, 1f, 1f,
                 )
                 val indices = byteArrayOf(
                     0, 4, 5, 0, 5, 1,
