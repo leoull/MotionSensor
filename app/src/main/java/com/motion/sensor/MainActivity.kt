@@ -31,13 +31,24 @@ class MainActivity : Activity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+            // Convert the rotation-vector to a 3x3 matrix.
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+
+            // Rotates the supplied rotation matrix so it is expressed in a different coordinate system
+            // https://developer.android.com/reference/android/hardware/SensorManager#remapCoordinateSystem(float[],%20int,%20int,%20float[])
+//            SensorManager.remapCoordinateSystem(
+//                rotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Z, rotationMatrix
+//
+////                rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_X, rotationMatrix
+//            )
+
             SensorManager.getOrientation(rotationMatrix, orientationAngles)
 
             val inclination = SensorManager.getInclination(rotationMatrix)
             val degree = Math.toDegrees(inclination.toDouble())
 
             Log.d("++tiltAngleDegrees,", degree.roundToInt().toString())
+
         }
     }
 
