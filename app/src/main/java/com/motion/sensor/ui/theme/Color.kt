@@ -1,4 +1,4 @@
-package com.motion.motionsensor.ui.theme
+package com.motion.sensor.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

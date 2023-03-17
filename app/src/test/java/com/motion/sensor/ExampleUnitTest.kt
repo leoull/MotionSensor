@@ -1,4 +1,4 @@
-package com.motion.motionsensor
+package com.motion.sensor
 
 import org.junit.Test
 
